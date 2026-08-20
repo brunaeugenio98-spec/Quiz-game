@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: white;
+            padding: 20px;
+        }
+
+        .quiz {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            color: #222;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        #question {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 25px 0;
+        }
+
+        .answer {
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #f8f8f8;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .answer:hover {
+            background: #eee;
+        }
+
+        #next {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            background: #243b55;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        #next:hover {
+            opacity: 0.9;
+        }
+
+        #score {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        #result {
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="quiz">
+
+    <h1>🎮 Quiz Game</h1>
+
+    <div id="game">
+
+        <div id="question"></div>
+
+        <div id="answers"></div>
+
+        <button id="next">Próxima pergunta</button>
+
+        <div id="score">Pontuação: 0</div>
+
+    </div>
+
+    <div id="result">
+        <h2>🏆 Fim do jogo!</h2>
+        <p id="finalScore"></p>
+        <button id="restart" onclick="location.reload()">
+            Jogar novamente
+        </button>
+    </div>
+
+</div>
+
+<script>
+
+const questions = [
+
+    {
+        question: "Qual é a capital de Angola?",
+        answers: [
+            "Luanda",
+            "Huambo",
+            "Benguela",
+            "Lubango"
+        ],
+        correct: 0
+    },
+
+    {
+        question: "Quantos dias tem uma semana?",
+        answers: [
+            "5",
+            "6",
+            "7",
+            "8"
+        ],
+        correct: 2
+    },
+
+    {
+        question: "Qual planeta é conhecido como Planeta Vermelho?",
+        answers: [
+            "Vénus",
+            "Marte",
+            "Júpiter",
+            "Saturno"
+        ],
+        correct: 1
+    },
+
+    {
+        question: "Quanto é 10 + 5?",
+        answers: [
+            "12",
+            "15",
+            "20",
+            "25"
+        ],
+        correct: 1
+    },
+
+    {
+        question: "Qual é o maior oceano da Terra?",
+        answers: [
+            "Atlântico",
+            "Índico",
+            "Pacífico",
+            "Ártico"
+        ],
+        correct: 2
+    }
+
+];
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function showQuestion() {
+
+    answered = false;
+
+    const question = questions[currentQuestion];
+
+    document.getElementById("question").textContent =
+        `${currentQuestion + 1}. ${question.question}`;
+
+    const answersDiv = document.getElementById("answers");
+
+    answersDiv.innerHTML = "";
+
+    question.answers.forEach((answer, index) => {
+
+        const button = document.createElement("button");
+
+        button.textContent = answer;
+
+        button.className = "answer";
+
+        button.onclick = () => checkAnswer(index, button);
+
+        answersDiv.appendChild(button);
+
+    });
+
+}
+
+function checkAnswer(index, button) {
+
+    if (answered) return;
+
+    answered = true;
+
+    const correct = questions[currentQuestion].correct;
+
+    if (index === correct) {
+
+        score += 100;
+
+        button.style.background = "#b7f7c1";
+
+    } else {
+
+        button.style.background = "#ffb3b3";
+
+    }
+
+    document.getElementById("score").textContent =
+        "Pontuação: " + score;
+
+}
+
+document.getElementById("next").onclick = () => {
+
+    if (!answered) {
+        alert("Escolhe uma resposta primeiro.");
+        return;
+    }
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+
+        showQuestion();
+
+    } else {
+
+        document.getElementById("game").style.display = "none";
+
+        document.getElementById("result").style.display = "block";
+
+        document.getElementById("finalScore").textContent =
+            "A tua pontuação foi: " + score + " pontos.";
+
+    }
+
+};
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
